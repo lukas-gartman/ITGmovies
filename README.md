@@ -3,7 +3,7 @@ A tool to book seats and purchase movie tickets to the ITG cinema. When purchasi
 
 This project is built with the Sinatra framework and uses Slim to create HTML pages and SQLite3 as a database management system.
 
-[ER-diagram](https://lh5.googleusercontent.com/dlpvURQyf2WmAGNioSGUmk6Or1hTVT65KBQfEVQsn96VxsgUiEfa9OsaP3AaiuCg_NeMKaWGkWW4oPaeYgr9gP9_xdRpdCmOv_76=w1526-h803)
+[ER-diagram](https://drive.google.com/file/d/0B3PkJI8biIOFZmdHbmlKYXZUNDZZcmZTZFBRQ01wa2lpRjMw/view?usp=sharing)
 
 [View movie web sequence diagram](https://www.websequencediagrams.com/?lz=dGl0bGUgVmlld2luZyBtb3ZpZSAjMTMzNwoKQnJvd3NlciAtPiBXZWIgU2VydmVyOiBIVFRQIGdldCAvACkFLwAoBQAXCiAtPiBBcHAucmI6IGdldCgnABwLJykKABUGABkMbWF0Y2ggcm91dGUAJA06aWQAIw1Nb3ZpZToAAQYuZ2V0KDEzMzcpCgASBSAtPiBEQjogU0VMRUNUICogRlJPTQCBSAZzIFdIRVJFIGlkIElTIACBVQVEQgBFC1tbMTMzNywgJ1RoZQBeBicsICdkZXNjcmlwdGlvbiddXQBbCgB-B25ldyhkYl9yZXN1bHRbMF0AfAsAgXQIAIEqBQCBXBNzbGltKDoAgmQFAIICDACCVA5NTACCQw8AgwUHAIJ3B3Jlc3BvbnNl&s=default)
 
