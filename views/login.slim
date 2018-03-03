@@ -1,0 +1,10 @@
+h1 Please login to browse our collection of movies
+div
+    form.login-form action="/login" method="POST"
+        input type="text" name="username" placeholder="Username"
+        input type="password" name="password" placeholder="Password"
+        input type="submit" value="Login"
+    p
+        | Don't have an account?
+        a href="/register"
+            | Sign up here
