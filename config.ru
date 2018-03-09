@@ -6,7 +6,9 @@ Bundler.require
 
 #Load the app
 require_relative 'app.rb'
-require_relative 'test.rb'
+require_relative 'utils/QuickData.rb'
+require_relative 'utils/account.rb'
+require_relative 'utils/movie.rb'
 
 #Slim HTML formatting
 Slim::Engine.set_options pretty: true, sort_attrs: false

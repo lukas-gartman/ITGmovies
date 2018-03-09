@@ -1,1 +1,6 @@
 ==display :'utils/flash'
+h2 Pick a movie that you would like to rent
+-@movies.each do |movie|
+    div.movie
+        a href="/movie/#{movie.id}" #{movie.title} (#{movie.year})
+        p #{movie.description}

@@ -1,91 +1,102 @@
-class Account
+class Account < QuickData
+    #config
+    table "accounts", String
+    primary_key "id", Integer, required: true
+    column "username", String, required: true
+    encrypted "pass_hash", String, required: true
+    column "email", String, required: true
+    column "rank", Integer, default: 0
+    column "last_active", DateTime, default: DateTime.now
+    column "registration_date", DateTime, default: DateTime.now
 
-    db = SQLite3::Database.open('../db/database.sqlite')
+    attr_accessor :id, :username, :pass_hash, :email, :rank, :last_active
 
-    attr_accessor :username, :email, :pass_hash, :rank
-
-    def initialize(username, email, pass_hash, rank)
+    def initialize(id, username, pass_hash, email, rank, register_date, last_active)
         @username = username
         @pass_hash = pass_hash
         @email = email
         @rank = rank
-    end
-    
-    # Instance methods
-    def auth
-
+        @register_date = register_date
+        @last_active = last_active
+        yield(self) if block_given?
     end
 
-    def getRank(username)
-        db.execute("SELECT rank FROM accounts WHERE username = ?", username)
-    end
-    
-    def setRank(username, rank)
-        db.execute("UPDATE accounts SET rank = ? WHERE username = ?", rank, username)
-    end
-
-
-    # Class methods
-    def self.auth(username, password)
-        username = username.downcase
-        account = Account.get(username)
-        if account.nil?
-            return false
-        else
-            account_username = account[1]
-            account_pass = account[2]
-            encrypted_pass = BCrypt::Password.new(account_pass)
-            if (account_username == username) && (encrypted_pass == password)
-                return username
-            else
-                return false
-            end
+    def to_a
+        ivars = self.instance_variables
+        values = []
+        for var in ivars
+            values.push(self.instance_variable_get(var))
         end
+        return values
     end
-    
-    def self.create(username, password, email)
-        encrypted_pass = BCrypt::Password.create(password)
-        if !/^[a-zA-Z0-9_]\w{2,15}$/.match(username)
-            @error = "Username may only contain characters (A-Z), numbers (0-9), underscores and be 3-16 characters long."
-            return false
-        elsif !/\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i.match(email)
-            @error = "Please enter a valid email address."
-            return false
-        elsif password.length < 6
-            @error = "Password must be at least 6 characters long."
-            return false
-        else
-            db.execute("INSERT INTO accounts (username, password, email) VALUES (?, ?, ?)", username, encrypted_pass, email)
-            account = db.execute("SELECT last_insert_rowid() FROM accounts").first
-            return account
+
+    def each
+        ivars = self.instance_variables
+        values = []
+        for var in ivars
+            values.push yield self.instance_variable_get(var) if block_given?
         end
+        return values
+    end
+
+    def each_with_index
+        ivars = self.instance_variables
+        values = []
+        index = 0
+        for var in ivars
+            values.push yield self.instance_variable_get(var), index if block_given?
+            index += 1
+        end
+        return values, index
+    end
+
+    def self.create(username, password, password_repeat, email)
+        raise "Password mismatch" unless password == password_repeat
+        pass_hash = BCrypt::Password.create(password)
+        @@db.execute("INSERT INTO accounts (username, pass_hash, email) VALUES (?, ?, ?)", username, pass_hash, email)
+        result = @@db.execute("SELECT * FROM accounts WHERE id = last_insert_rowid()").first
+        return self.new(*result)
     end
 
     def self.remove(username)
-        db.execute("DELETE FROM accounts WHERE username = ?", username)
+        return @@db.execute("DELETE FROM accounts WHERE username = ?", username)
     end
 
-    def self.get(username)
-        return db.execute("SELECT * FROM accounts WHERE username = ?", username).first
-    end
-
-    def self.find(username)
-        return db.execute("SELECT * FROM accounts WHERE username LIKE ?", "%#{username}%")
-    end
-
-    def all
-        accounts = db.execute("SELECT * FROM accounts")
-        accounts.each do |account|
-            Account.new(account[1], account[3], account[4], account[5], account[6])
+    def self.auth(username, password)
+        user = self.select(username)
+        return false if user.nil?
+        db_password = BCrypt::Password.new(user.pass_hash)
+        if db_password == password
+            return user
+        else
+            return false
         end
     end
 
-    def first
-        db.execute("SELECT * FROM accounts LIMIT 1")
+    def self.select(username)
+        result = @@db.execute("SELECT * FROM accounts WHERE username = ?", username).first
+        return nil if result.nil?
+        return self.new(*result)
     end
 
-    def latest
-        db.execute("SELECT * FROM accounts ORDER BY DESC LIMIT 1")
+    def self.all
+        accounts = @@db.execute("SELECT * FROM accounts")
+        account_objects = []
+        for account in accounts
+            account_objects.push(self.new(*account))
+        end
+        return account_objects
     end
 
+    def self.first
+        begin
+            return @@db.execute("SELECT * FROM accounts LIMIT 1").first
+        rescue
+            raise "Table is empty"
+        end
+    end
+
+    def self.set_rank(username, rank)
+        return @@db.execute("UPDATE accounts SET rank = ? WHERE username = ?", rank, username)
+    end
 end
