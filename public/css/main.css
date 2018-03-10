@@ -11,6 +11,53 @@ body {
 	height: 100vh;
 }
 
+input[type="text"], input[type="email"], input[type="password"], textarea {
+	border: solid;
+	border-width: 1px;
+    border-radius: 3px;
+	border-color: rgba(0, 0, 0, 0.4);
+    padding: 8px;
+    resize: none;
+}
+
+input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus, textarea:focus {
+	box-shadow: 0 0 5px rgb(238, 81, 81);
+}
+
+input[type="submit"] {
+	display: block;
+	padding: 10px;
+	color: black;
+	background-color: rgb(255, 255, 255);
+	text-decoration: none;
+	border: none;
+	border-radius: 3px;
+	text-align: center;
+	margin-top: 10px;
+}
+
+input[type="submit"]:hover {
+	background-color: #ff4444;
+	cursor: pointer;
+}
+
+.button {
+	display: inline-block;
+	padding: 5px 10px;
+	color: black;
+	background-color: #ffffff;
+	text-decoration: none;
+	border-radius: 2px;
+	text-align: center;
+	align-self: center;
+	margin-left: 10px;
+}
+
+.button:hover, .button-active {
+	background-color: #ff4444;
+	color: white;
+}
+
 nav {
 	display: flex;
 	flex-direction: row;
@@ -41,7 +88,8 @@ nav {
 main {
 	display: flex;
 	flex-direction: column;
-	align-self: center;
+	align-items: center;
+	margin: 0 auto;
 	width: 80vw;
 	padding: 40px 0;
 }
@@ -50,12 +98,23 @@ main {
 	display: flex;
 	flex-direction: column;
 	/* justify-content: center; */
-	align-items: center;
+	align-self: center;
+	max-width: 250px;
+	/* align-items: center; */
+}
+
+.login-form > form > input {
+	margin-top: 10px;
+}
+
+.remember {
+	display: flex;
+	flex-direction: row;
+	margin-top: 10px;
 }
 
 .movie {
-	display: flex;
-	flex-direction: column;
+	display: inline-block;
 	align-self: center;
 	width: 80vw;
 	color: black;
@@ -66,4 +125,22 @@ main {
 
 .movie > p {
 	margin: 5px 0;
+}
+
+.pagination {
+	display: flex;
+	flex-direction: row;
+	margin: 10px;
+}
+
+.movie-sort {
+	display: flex;
+	flex-direction: row;
+	/* margin: 10px; */
+	margin-left: 20px;
+}
+
+.movie-sort > input[type="submit"] {
+	padding: 5px 10px;
+	margin: 0 0 0 10px;
 }

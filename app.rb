@@ -10,33 +10,50 @@ class App < Sinatra::Base
 		end
 	end
 
+	before do
+		if session[:username]
+			@user = Account.select(session[:username])
+		end
+	end
+
 	not_found do
 		status 404
 		@title = "404 Not Found"
 		slim :'utils/not_found'	
 	end
 
-	before do
-		if session[:username]
-			@user = Account.select(session[:username])
-		end
+	get '/denied' do
+		status 403
+		@title = "Access denied"
+		slim :denied
 	end
 	
 	get '/' do
 		if session[:username]
 			@title = "ITG Movies"
 			@movies = Movie.all
+			if @movies.length > 10
+				redirect '/page/1'
+			end
 			slim :index
 		else
 			@title = "ITG Movies | Sign in"
 			slim :login
 		end
-    end
+	end
 	
-	get '/denied' do
-		status 403
-		@title = "Access denied"
-		slim :denied
+	get '/page/:page' do
+		@current_page = params['page'].to_i
+		order = params['order']
+
+		movies = Movie.all(order: order).split(15)
+		@page_count = movies.length
+		@movies = movies[@current_page - 1]
+		if @movies.nil?
+			flash[:error] = "Page does not exist"
+			redirect back
+		end
+		slim :index
 	end
 
 	get '/register' do
@@ -84,7 +101,7 @@ class App < Sinatra::Base
 	end
 	
 	get '/test' do
-		slim :test
+		
 	end
 
 	get '/test/:username' do

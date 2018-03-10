@@ -66,11 +66,7 @@ class Account < QuickData
         user = self.select(username)
         return false if user.nil?
         db_password = BCrypt::Password.new(user.pass_hash)
-        if db_password == password
-            return user
-        else
-            return false
-        end
+        db_password == password ? user : false
     end
 
     def self.select(username)

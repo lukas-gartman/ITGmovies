@@ -6,6 +6,7 @@ Bundler.require
 
 #Load the app
 require_relative 'app.rb'
+require_relative 'utils/extensions.rb'
 require_relative 'utils/QuickData.rb'
 require_relative 'utils/account.rb'
 require_relative 'utils/movie.rb'

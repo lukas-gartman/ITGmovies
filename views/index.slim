@@ -1,6 +1,66 @@
 ==display :'utils/flash'
-h2 Pick a movie that you would like to rent
+h2 Choose a movie
+div.pagination
+    -unless @current_page == 1
+        -if params['order']
+            a.button href="/page/#{@current_page - 1}?order=#{params['order']}" Prev
+        -else
+            a.button href="/page/#{@current_page - 1}" Prev
+
+    -(1..@page_count).each do |page|
+        -if @current_page == page
+            -if params['order']
+                a.button.button-active href="/page/#{page}?order=#{params['order']}" =page
+            -else
+                a.button.button-active href="/page/#{page}" =page
+        -else
+            -if params['order']
+                a.button href="/page/#{page}?order=#{params['order']}" =page
+            -else
+                a.button href="/page/#{page}" =page
+            
+    -unless @current_page == @page_count
+        -if params['order']
+            a.button href="/page/#{@current_page + 1}?order=#{params['order']}" Next
+        -else
+            a.button href="/page/#{@current_page + 1}" Next
+
+    form.movie-sort
+        select name="order"
+            option value="popular" Popular
+            option value="rating" Rating
+            option value="year" Year
+            option value="asc" Order A-Z
+            option value="desc" Order Z-A
+        input type="submit" value="Sort"
+    
+
 -@movies.each do |movie|
     div.movie
         a href="/movie/#{movie.id}" #{movie.title} (#{movie.year})
         p #{movie.description}
+
+div.pagination
+    -unless @current_page == 1
+        -if params['order']
+            a.button href="/page/#{@current_page - 1}?order=#{params['order']}" Prev
+        -else
+            a.button href="/page/#{@current_page - 1}" Prev
+
+    -(1..@page_count).each do |page|
+        -if @current_page == page
+            -if params['order']
+                a.button.button-active href="/page/#{page}?order=#{params['order']}" =page
+            -else
+                a.button.button-active href="/page/#{page}" =page
+        -else
+            -if params['order']
+                a.button href="/page/#{page}?order=#{params['order']}" =page
+            -else
+                a.button href="/page/#{page}" =page
+            
+    -unless @current_page == @page_count
+        -if params['order']
+            a.button href="/page/#{@current_page + 1}?order=#{params['order']}" Next
+        -else
+            a.button href="/page/#{@current_page + 1}" Next

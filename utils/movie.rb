@@ -52,6 +52,10 @@ class Movie < QuickData
         return values, index
     end
 
+    def limit()
+
+    end
+
     def self.add(title, description, director, length, genre)
         @@db.execute("INSERT INTO movies (title, description, director, length, genre) VALUES (?, ?, ?, ?, ?)", title, description, director, length, genre)
         result = @@db.execute("SELECT last_insert_rowid() FROM movies").first
@@ -67,12 +71,24 @@ class Movie < QuickData
         return self.new(*result)
     end
 
-    def self.all
-        movies = @@db.execute("SELECT * FROM movies")
+    def self.all(options = {})
+        if options[:order] == "rating"
+            movies = @@db.execute("SELECT * FROM movies ORDER BY rating DESC")
+        elsif options[:order] == "year"
+            movies = @@db.execute("SELECT * FROM movies ORDER BY year DESC")
+        elsif options[:order] == "asc"
+            movies = @@db.execute("SELECT * FROM movies ORDER BY title ASC")
+        elsif options[:order] == "desc"
+            movies = @@db.execute("SELECT * FROM movies ORDER BY title DESC")
+        else
+            movies = @@db.execute("SELECT * FROM movies")
+        end
+
         movie_objects = []
         for movie in movies
             movie_objects.push(self.new(*movie))
         end
+
         return movie_objects
     end
 
