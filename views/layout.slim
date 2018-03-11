@@ -1,7 +1,7 @@
 doctype html
 html
 	head
-		meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"
+		meta name="viewport" content="width=device-width, initial-scale=1"
 		meta charset="utf-8"
 		/* script src="/js/main.js" */
 		link rel="stylesheet" href="/css/main.css"
@@ -11,7 +11,10 @@ html
 	body
 		nav
 			a.navitem href="/" Home
-			a.navitem href="#" Menu item 2
+			-if logged_in?
+				a.navitem href="/logout" Logout
+			-else
+				a.navitem href="/" Menu item 2
 			a.navitem href="#" The third menu
 		main
 			== yield

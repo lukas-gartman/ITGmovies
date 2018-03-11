@@ -1,3 +1,27 @@
+html {
+	overflow-y: scroll;
+}
+
+/* flash */
+.alert {
+	display: flex;
+	width: auto;
+	height: 40px;
+	border-radius: 2px;
+	align-items: center;
+	margin: 15px;
+	padding: 0 10px;
+	color: white;
+}
+
+.alert-success {
+	background-color: rgba(121, 190, 37, 0.9);
+}
+
+.alert-error {
+	background-color: rgba(255, 0, 0, 0.9);
+}
+
 body {
 	display: flex;
 	flex-direction: column;
@@ -28,7 +52,7 @@ input[type="submit"] {
 	display: block;
 	padding: 10px;
 	color: black;
-	background-color: rgb(255, 255, 255);
+	background-color: white;
 	text-decoration: none;
 	border: none;
 	border-radius: 3px;
@@ -39,6 +63,16 @@ input[type="submit"] {
 input[type="submit"]:hover {
 	background-color: #ff4444;
 	cursor: pointer;
+}
+
+table, th, td {
+    border: 1px solid rgb(255, 255, 255);
+    border-collapse: collapse;
+}
+
+th, td {
+	padding: 10px;
+	text-align: left;
 }
 
 .button {
@@ -143,4 +177,77 @@ main {
 .movie-sort > input[type="submit"] {
 	padding: 5px 10px;
 	margin: 0 0 0 10px;
+}
+
+
+/* Movie view */
+.booking {
+	display: inline-block;
+	/* display: flex; */
+	/* flex-direction: column; */
+	/* max-width: 650px; */
+	color: black;
+	background-color: white;
+	padding: 10px;
+	
+}
+
+.booking > span, .booking > span:after {
+	content: "\a";
+	white-space: pre;
+}
+
+.booking > span > label {
+	display: inline-block;
+	width: 16px;
+}
+
+.booking > input[type="submit"] {
+	color: white;
+	background-color: #c00000;
+	/* float: right; */
+	width: 100%;
+}
+
+.booking > input[type="submit"]:hover {
+	background-color: #e00000;
+}
+
+.seat {
+	/* padding: 50px; */
+	transform: scale(1.5);
+	margin: 10px;
+}
+
+.seat:hover {
+	cursor: pointer;
+}
+
+.seat[disabled=""]:hover {
+	cursor: not-allowed;
+}
+
+@media screen and (max-width: 750px) {
+	.seat {
+		transform: scale(1.2);
+		margin: 5px;
+	}
+}
+
+@media screen and (max-width: 500px) {
+	.seat {
+		transform: scale(1);
+		margin: 2px;
+	}
+}
+
+@media screen and (max-width: 400px) {
+	.booking {
+		padding: 5px;
+	}
+
+	.seat {
+		transform: scale(0.8);
+		margin: 1px;
+	}
 }

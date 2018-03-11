@@ -10,6 +10,9 @@ require_relative 'utils/extensions.rb'
 require_relative 'utils/QuickData.rb'
 require_relative 'utils/account.rb'
 require_relative 'utils/movie.rb'
+require_relative 'utils/ticket.rb'
+require_relative 'utils/salon.rb'
+require_relative 'utils/show.rb'
 
 #Slim HTML formatting
 Slim::Engine.set_options pretty: true, sort_attrs: false

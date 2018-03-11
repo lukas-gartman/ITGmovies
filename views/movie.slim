@@ -1,0 +1,38 @@
+==display :'utils/flash'
+div.movie-info
+    h1 =@movie.title
+    table
+        tr
+            th Year
+            th Length
+            th Genre
+            th Director
+            th Rating
+        tr
+            th #{@movie.year}
+            th #{(@movie.length / 60).floor}h #{@movie.length % 60}min
+            th #{@movie.genre}
+            th #{@movie.director}
+            th #{@movie.rating}/10
+
+    h3 Description:
+    p #{@movie.description}
+
+    -unless @shows.empty?
+        h2 Purchase tickets
+        form.booking action="/movie/purchase" method="POST"
+            div.shows
+                label Select show: 
+                select name="show"
+                    -for show in @shows
+                        option value="#{show.id}" =show.air_date
+            input type="hidden" name="id" value="#{@movie.id}"
+            -@seats.each_with_index do |seats, i|
+                span
+                    label =i+1
+                    -for seat in seats
+                        -if @seats_taken.include?(seat)
+                            input.seat type="checkbox" name="seat[#{seat}]" title="#{seat}" value="#{seat}" disabled="" checked=""
+                        -else
+                            input.seat type="checkbox" name="seat[#{seat}]" title="#{seat}" value="#{seat}"
+            input type="submit" value="Purchase tickets"

@@ -52,13 +52,9 @@ class Movie < QuickData
         return values, index
     end
 
-    def limit()
-
-    end
-
     def self.add(title, description, director, length, genre)
         @@db.execute("INSERT INTO movies (title, description, director, length, genre) VALUES (?, ?, ?, ?, ?)", title, description, director, length, genre)
-        result = @@db.execute("SELECT last_insert_rowid() FROM movies").first
+        result = @@db.execute("SELECT * FROM movies WHERE id = last_insert_rowid()").first
         return self.new(*result)
     end
 
@@ -66,8 +62,13 @@ class Movie < QuickData
         @@db.execute("DELETE FROM movies WHERE username = ?", username)
     end
 
-    def self.select(title)
-        result = @@db.execute("SELECT * FROM movies WHERE username = ?", title).first
+    def self.select(id)
+        movie = @@db.execute("SELECT * FROM movies WHERE id = ?", id).first
+        return self.new(*movie) unless movie.nil?
+    end
+
+    def self.search(title)
+        result = @@db.execute("SELECT * FROM movies WHERE username LIKE ?", "%#{title}%").first
         return self.new(*result)
     end
 
