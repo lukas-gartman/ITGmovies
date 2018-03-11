@@ -61,6 +61,7 @@ input[type="submit"] {
 }
 
 input[type="submit"]:hover {
+	color: white;
 	background-color: #ff4444;
 	cursor: pointer;
 }
@@ -99,11 +100,9 @@ nav {
 	top: 0;
 	left: 0;
 	z-index: 1;
-	width: 100vw;
+	width: 100%;
 	height: 40px;
-	/* background-color: rgb(200, 0, 0); */
 	background-color: rgb(100, 0, 0);
-	/* padding: 10px; */
 	justify-content: center;
 	align-items: center;
 }
@@ -119,13 +118,48 @@ nav {
 	border-bottom: 2px solid white;
 }
 
+.row {
+	display: flex;
+	flex-direction: row;
+}
+
+div.dotted {
+	display: flex;
+	/* border-style: dotted; */
+	position: sticky;
+	top: 50px;
+	width: 20vw;
+	height: calc(100vh - 65px);
+	margin: 50px 20px 0;
+	padding: 1px;
+	background-image: url('../img/selection.gif');
+}
+
+div.ad {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: #8B0000;
+	width: 100%;
+	height: 100%;
+	/* margin: 100px 1px; */
+}
+
 main {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	margin: 0 auto;
 	width: 80vw;
+	max-width: 1000px;
 	padding: 40px 0;
+}
+
+.register {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
 }
 
 .login-form {
@@ -137,7 +171,7 @@ main {
 	/* align-items: center; */
 }
 
-.login-form > form > input {
+.login-form > form > input, .register > input {
 	margin-top: 10px;
 }
 
@@ -150,7 +184,7 @@ main {
 .movie {
 	display: inline-block;
 	align-self: center;
-	width: 80vw;
+	width: 100%;
 	color: black;
 	background-color: white;
 	margin: 10px 0;
@@ -170,8 +204,13 @@ main {
 .movie-sort {
 	display: flex;
 	flex-direction: row;
+	align-items: center;
 	/* margin: 10px; */
-	margin-left: 20px;
+	/* margin-left: 20px; */
+}
+
+.movie-sort > select {
+	margin: 0 0 0 10px ;
 }
 
 .movie-sort > input[type="submit"] {

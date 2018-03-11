@@ -1,5 +1,34 @@
 ==display :'utils/flash'
 h2 Choose a movie
+
+form.movie-sort
+    -if params[:available]
+        input type="checkbox" name="available" checked="" Available shows
+    -else
+        input type="checkbox" name="available" Available shows
+    select name="order"
+        -if params[:order] == "popular"
+            option value="popular" selected="" Popular
+        -else
+            option value="popular" Popular
+        -if params[:order] == "rating"
+            option value="rating" selected="" Rating
+        -else
+            option value="rating" Rating
+        -if params[:order] == "year"
+            option value="year" selected="" Year
+        -else
+            option value="year" Year
+        -if params[:order] == "asc"
+            option value="asc" selected="" Order A-Z
+        -else
+            option value="asc" Order A-Z
+        -if params[:order] == "desc"
+            option value="desc" selected="" Order Z-A
+        -else
+            option value="desc" Order Z-A
+    input type="submit" value="Sort"
+
 div.pagination
     -if @page_count >= 2
         -unless @current_page == 1
@@ -24,18 +53,7 @@ div.pagination
             -if params['order']
                 a.button href="/page/#{@current_page + 1}?order=#{params['order']}" Next
             -else
-                a.button href="/page/#{@current_page + 1}" Next
-
-    form.movie-sort
-        input type="checkbox" name="available" Available shows
-        select name="order"
-            option value="popular" Popular
-            option value="rating" Rating
-            option value="year" Year
-            option value="asc" Order A-Z
-            option value="desc" Order Z-A
-        input type="submit" value="Sort"
-    
+                a.button href="/page/#{@current_page + 1}" Next    
 
 -@movies.each do |movie|
     div.movie
