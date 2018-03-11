@@ -1,31 +1,33 @@
 ==display :'utils/flash'
 h2 Choose a movie
 div.pagination
-    -unless @current_page == 1
-        -if params['order']
-            a.button href="/page/#{@current_page - 1}?order=#{params['order']}" Prev
-        -else
-            a.button href="/page/#{@current_page - 1}" Prev
+    -if @page_count >= 2
+        -unless @current_page == 1
+            -if params['order']
+                a.button href="/page/#{@current_page - 1}?order=#{params['order']}" Prev
+            -else
+                a.button href="/page/#{@current_page - 1}" Prev
 
-    -(1..@page_count).each do |page|
-        -if @current_page == page
-            -if params['order']
-                a.button.button-active href="/page/#{page}?order=#{params['order']}" =page
+        -(1..@page_count).each do |page|
+            -if @current_page == page
+                -if params['order']
+                    a.button.button-active href="/page/#{page}?order=#{params['order']}" =page
+                -else
+                    a.button.button-active href="/page/#{page}" =page
             -else
-                a.button.button-active href="/page/#{page}" =page
-        -else
+                -if params['order']
+                    a.button href="/page/#{page}?order=#{params['order']}" =page
+                -else
+                    a.button href="/page/#{page}" =page
+                
+        -unless @current_page == @page_count
             -if params['order']
-                a.button href="/page/#{page}?order=#{params['order']}" =page
+                a.button href="/page/#{@current_page + 1}?order=#{params['order']}" Next
             -else
-                a.button href="/page/#{page}" =page
-            
-    -unless @current_page == @page_count
-        -if params['order']
-            a.button href="/page/#{@current_page + 1}?order=#{params['order']}" Next
-        -else
-            a.button href="/page/#{@current_page + 1}" Next
+                a.button href="/page/#{@current_page + 1}" Next
 
     form.movie-sort
+        input type="checkbox" name="available" Available shows
         select name="order"
             option value="popular" Popular
             option value="rating" Rating
@@ -41,26 +43,27 @@ div.pagination
         p #{movie.description}
 
 div.pagination
-    -unless @current_page == 1
-        -if params['order']
-            a.button href="/page/#{@current_page - 1}?order=#{params['order']}" Prev
-        -else
-            a.button href="/page/#{@current_page - 1}" Prev
+    -if @page_count >= 2
+        -unless @current_page == 1
+            -if params['order']
+                a.button href="/page/#{@current_page - 1}?order=#{params['order']}" Prev
+            -else
+                a.button href="/page/#{@current_page - 1}" Prev
 
-    -(1..@page_count).each do |page|
-        -if @current_page == page
-            -if params['order']
-                a.button.button-active href="/page/#{page}?order=#{params['order']}" =page
+        -(1..@page_count).each do |page|
+            -if @current_page == page
+                -if params['order']
+                    a.button.button-active href="/page/#{page}?order=#{params['order']}" =page
+                -else
+                    a.button.button-active href="/page/#{page}" =page
             -else
-                a.button.button-active href="/page/#{page}" =page
-        -else
+                -if params['order']
+                    a.button href="/page/#{page}?order=#{params['order']}" =page
+                -else
+                    a.button href="/page/#{page}" =page
+                
+        -unless @current_page == @page_count
             -if params['order']
-                a.button href="/page/#{page}?order=#{params['order']}" =page
+                a.button href="/page/#{@current_page + 1}?order=#{params['order']}" Next
             -else
-                a.button href="/page/#{page}" =page
-            
-    -unless @current_page == @page_count
-        -if params['order']
-            a.button href="/page/#{@current_page + 1}?order=#{params['order']}" Next
-        -else
-            a.button href="/page/#{@current_page + 1}" Next
+                a.button href="/page/#{@current_page + 1}" Next

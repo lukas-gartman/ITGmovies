@@ -58,14 +58,35 @@ class App < Sinatra::Base
 	
 	get '/page/:page' do
 		@current_page = params[:page].to_i
+		available = params[:available]
 		order = params[:order]
 
-		movies = Movie.all(order: order).split(15)
-		@page_count = movies.length
-		@movies = movies[@current_page - 1]
-		if @movies.nil?
-			flash[:error] = "Page does not exist"
-			redirect back
+		if available
+			movies = Movie.all(order: order)
+
+			available_shows = []
+			for movie in movies
+				show = Show.get_shows_for_movie(movie.id)
+				unless show.empty?
+					available_shows.push(movie)
+				end
+			end
+			available_shows = available_shows.split(15)
+			
+			@page_count = available_shows.length
+			@movies = available_shows[@current_page - 1]
+			if @movies.nil?
+				flash[:error] = "Page does not exist"
+				redirect back
+			end
+		else
+			movies = Movie.all(order: order).split(15)
+			@page_count = movies.length
+			@movies = movies[@current_page - 1]
+			if @movies.nil?
+				flash[:error] = "Page does not exist"
+				redirect back
+			end
 		end
 		slim :index
 	end
