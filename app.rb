@@ -2,7 +2,6 @@ class App < Sinatra::Base
     
 	enable :sessions
 	register Sinatra::Flash
-	# register Sinatra::Streaming
 
 	helpers do
 		def display(file)
@@ -42,6 +41,124 @@ class App < Sinatra::Base
 		slim :denied
 	end
 	
+
+	get '/register' do
+		if logged_in?
+			flash[:error] = "You already have an account"
+			redirect back
+		else
+			@title = "Register account"
+			slim :register
+		end
+	end
+
+	post '/register' do
+		username = params[:username]
+		password = params[:password]
+		password_repeat = params[:password_repeat]
+		email = params[:email]
+		Account.create(username, password, password_repeat, email)
+		flash[:success] = "Account created. Welcome!"
+		redirect '/'
+	end
+
+	get '/login' do
+		slim :login
+	end
+
+	post '/login' do
+		username = params[:username]
+		password = params[:password]
+		remember = params[:remember]
+		if Account.auth(username, password)
+			session[:username] = username
+			session.options[:expire_after] = 2592000 unless remember.nil?
+			# flash[:success] = "Logged in"
+			redirect back
+		else
+			flash[:error] = "Invalid username or password"
+			redirect back
+		end
+	end
+
+	get '/logout' do
+		if logged_in?
+			session.delete(:username)
+			redirect '/'
+		else
+			flash[:error] = "You are not logged in"
+			redirect back
+		end
+	end
+
+	get '/admin' do
+		@movies = Movie.all(order: "asc")
+		@salons = Salon.all
+		slim :admin
+
+		# if @user.rank == 3
+		# 	@movies = Movie.all(order: "asc")
+
+		# 	slim :admin
+		# else
+		# 	flash[:error] = "You do not have permission to view this page"
+		# 	redirect '/denied'
+		# end
+	end
+
+	post '/show/create' do
+		movie = params[:movie]
+		salon = params[:salon]
+		date = params[:date]
+		time = params[:time]
+		air_date = "#{date} #{time}:00"
+
+		if movie.empty?
+			flash[:error] = "Please select a movie"
+			redirect back
+		elsif salon.empty?
+			flash[:error] = "Please select a salon"
+			redirect back
+		elsif date.empty?
+			flash[:error] = "Please select a date"
+			redirect back
+		elsif time.empty?
+			flash[:error] = "Please select a time"
+			redirect back
+		end
+
+		Show.create(movie, salon, air_date)
+		flash[:success] = "Show has been created"
+		redirect back
+	end
+
+	post '/salon/create' do
+		capacity_x = params[:capacity_x]
+		capacity_y = params[:capacity_y]
+		capacity = "#{capacity_x}x#{capacity_y}"
+		vip = params[:vip]
+		handicap = params[:handicap]
+
+		Salon.create(capacity, vip, handicap)
+		flash[:success] = "Salon has been added"
+		redirect back
+	end
+
+	post '/movie/create' do
+		title = params[:title]
+		description = params[:description]
+		director = params[:director]
+		genre = params[:genre]
+		rating = params[:rating]
+		year = params[:year]
+		length = (params[:length_hours].to_i*60) + params[:length_minutes].to_i
+
+		Movie.create(title, description, director, length, rating, year, genre)
+		flash[:success] = "Movie has been added"
+		redirect back
+	end
+
+
 	get '/' do
 		if logged_in?
 			@title = "ITG Movies"
@@ -89,55 +206,6 @@ class App < Sinatra::Base
 			end
 		end
 		slim :index
-	end
-
-	get '/register' do
-		if logged_in?
-			flash[:error] = "You already have an account"
-			redirect back
-		else
-			@title = "Register account"
-			slim :register
-		end
-	end
-
-	post '/register' do
-		username = params[:username]
-		password = params[:password]
-		password_repeat = params[:password_repeat]
-		email = params[:email]
-		Account.create(username, password, password_repeat, email)
-		flash[:success] = "Account created. Welcome!"
-		redirect back
-	end
-
-	get '/login' do
-		slim :login
-	end
-
-	post '/login' do
-		username = params[:username]
-		password = params[:password]
-		remember = params[:remember]
-		if Account.auth(username, password)
-			session[:username] = username
-			session.options[:expire_after] = 2592000 unless remember.nil?
-			flash[:success] = "Logged in"
-			redirect back
-		else
-			flash[:error] = "Invalid username or password"
-			redirect back
-		end
-	end
-
-	get '/logout' do
-		if logged_in?
-			session.delete(:username)
-			redirect '/'
-		else
-			flash[:error] = "You are not logged in"
-			redirect back
-		end
 	end
 
 	get '/movie/:id' do

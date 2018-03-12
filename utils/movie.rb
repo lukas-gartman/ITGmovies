@@ -52,8 +52,8 @@ class Movie < QuickData
         return values, index
     end
 
-    def self.add(title, description, director, length, genre)
-        @@db.execute("INSERT INTO movies (title, description, director, length, genre) VALUES (?, ?, ?, ?, ?)", title, description, director, length, genre)
+    def self.create(title, description, director, length, rating, year, genre)
+        @@db.execute("INSERT INTO movies (title, description, director, length, rating, year, genre) VALUES (?, ?, ?, ?, ?, ?, ?)", title, description, director, length, rating, year, genre)
         result = @@db.execute("SELECT * FROM movies WHERE id = last_insert_rowid()").first
         return self.new(*result)
     end

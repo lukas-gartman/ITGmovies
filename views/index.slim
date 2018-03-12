@@ -11,18 +11,22 @@ form.movie-sort
             option value="popular" selected="" Popular
         -else
             option value="popular" Popular
+
         -if params[:order] == "rating"
             option value="rating" selected="" Rating
         -else
             option value="rating" Rating
+            
         -if params[:order] == "year"
             option value="year" selected="" Year
         -else
             option value="year" Year
+
         -if params[:order] == "asc"
             option value="asc" selected="" Order A-Z
         -else
             option value="asc" Order A-Z
+            
         -if params[:order] == "desc"
             option value="desc" selected="" Order Z-A
         -else

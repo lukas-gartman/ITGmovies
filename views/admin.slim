@@ -1,0 +1,78 @@
+==display :'utils/flash'
+div.admin
+    h1 Admin panel
+
+    h2 Create show
+    div.admin-category
+        form.column action="/show/create" method="POST"
+            label Movie:
+            select name="movie"
+                -for movie in @movies
+                    option value="#{movie.id}" =movie.title
+            div
+                label Salon:
+                select name="salon"
+                    -for salon in @salons
+                        option value="#{salon.id}" =salon.id
+                label Air date:
+                input type="date" name="date" min="#{Date.today}" max="#{Date.today + 30}" required=""
+                label Air time:
+                input type="time" name="time" required=""
+
+            input type="submit" value="Create show"
+
+    h2 Add salon
+    div.admin-category
+        form.column action="/salon/create" method="POST"
+            div
+                / label Salon id:
+                / input type="number" name="id" min="1"
+
+                label Capacity:
+                input type="number" title="Width" name="capacity_x"
+                label x
+                input type="number" title="Height" name="capacity_y"
+
+                label VIP:
+                select name="vip"
+                    option value="true" Yes
+                    option value="false" selected="" No
+                
+                label Handicap:
+                select name="handicap"
+                    option value="true" Yes
+                    option value="false" selected="" No
+
+            input type="submit" value="Add salon"
+
+    h2 Add movie
+    div.admin-category
+        form.column action="/movie/create" method="POST"
+
+            label Title:
+            input type="text" name="title"
+
+            label Description:
+            textarea name="description"
+
+            div
+                label Director:
+                input type="text" name="director"
+
+                label Genre:
+                input type="text" name="genre"
+
+            div
+                label Rating:
+                input type="number" name="rating" min="0" max="10" step="0.1"
+                label Year:
+                input type="number" name="year" min="1878"
+            
+            div
+                label Length:
+                input type="number" name="length_hours" min="0" value="0"
+                label hrs
+                input type="number" name="length_minutes" min="0" value="0"
+                label min
+
+            input type="submit" value="Add movie"

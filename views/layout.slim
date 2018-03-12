@@ -13,9 +13,11 @@ html
 			a.navitem href="/" Home
 			-if logged_in?
 				a.navitem href="/logout" Logout
+				-if @user.rank == 3
+					a.navitem href="/admin" Admin panel
 			-else
-				a.navitem href="/" Menu item 2
-			a.navitem href="#" The third menu
+				a.navitem href="#" Menu item 2
+				a.navitem href="#" The third menu
 		div.row
 			div.dotted
 				div.ad Ad placeholder

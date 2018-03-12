@@ -15,6 +15,12 @@ class Show < QuickData
         yield(self) if block_given?
     end
 
+    def self.create(movie, salon, air_date)
+        @@db.execute("INSERT INTO shows (movie, salon, air_date) VALUES (?, ?, ?)", movie, salon, air_date)
+        result = @@db.execute("SELECT * FROM shows WHERE id = last_insert_rowid()").first
+        return self.new(*result) unless result.nil?
+    end
+
     def self.get_shows_for_movie(id)
         shows = @@db.execute("SELECT * FROM shows WHERE movie = ?", id)
 

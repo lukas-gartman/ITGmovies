@@ -123,6 +123,11 @@ nav {
 	flex-direction: row;
 }
 
+.column {
+	display: flex;
+	flex-direction: column;
+}
+
 div.dotted {
 	display: flex;
 	/* border-style: dotted; */
@@ -181,6 +186,46 @@ main {
 	margin-top: 10px;
 }
 
+
+/* Admin panel*/
+.admin {
+	width: 80%;
+	margin-right: 20px;
+}
+
+.admin-category {
+	width: 100%;
+	color: black;
+	background-color: white;
+	padding: 10px;
+}
+
+.admin-category > form > * {
+	margin: 5px;
+}
+
+.admin-category > form > div > * {
+	margin-right: 10px;
+}
+
+.admin-category > form > input[type="submit"] {
+	color: white;
+	background-color: #c00000;
+}
+
+.admin-category > form > input[type="submit"]:hover {
+	background-color: #e00000;
+}
+
+.admin-category > form[action="/salon/create"] > div > input {
+	width: 32px;
+}
+
+.admin-category > form[action="/movie/create"] > div > input[type="number"] {
+	width: 48px;
+}
+
+/* Movie list */
 .movie {
 	display: inline-block;
 	align-self: center;
@@ -266,10 +311,24 @@ main {
 	cursor: not-allowed;
 }
 
+@media screen and (max-width: 1000px) {
+	.dotted {
+		display: none !important;
+	}
+
+	.admin {
+		width: 100%;
+	}
+}
+
 @media screen and (max-width: 750px) {
 	.seat {
 		transform: scale(1.2);
 		margin: 5px;
+	}
+
+	main {
+		width: 90vw;
 	}
 }
 
