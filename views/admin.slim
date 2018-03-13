@@ -13,7 +13,10 @@ div.admin
                 label Salon:
                 select name="salon"
                     -for salon in @salons
-                        option value="#{salon.id}" =salon.id
+                        -if salon.vip.true?
+                            option value="#{salon.id}" #{salon.id} (#{salon.capacity}) - VIP
+                        -else
+                            option value="#{salon.id}" #{salon.id} (#{salon.capacity})
                 label Air date:
                 input type="date" name="date" min="#{Date.today}" max="#{Date.today + 30}" required=""
                 label Air time:
@@ -29,9 +32,9 @@ div.admin
                 / input type="number" name="id" min="1"
 
                 label Capacity:
-                input type="number" title="Width" name="capacity_x"
+                input type="number" min="1" max="20" title="Width" name="capacity_x"
                 label x
-                input type="number" title="Height" name="capacity_y"
+                input type="number" min="1" max="30" title="Height" name="capacity_y"
 
                 label VIP:
                 select name="vip"

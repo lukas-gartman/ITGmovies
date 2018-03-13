@@ -13,3 +13,9 @@ class Array
         return array
     end
 end
+
+class String
+    def true?
+        self.to_s == "true"
+    end
+end

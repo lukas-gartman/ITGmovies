@@ -219,12 +219,9 @@ class App < Sinatra::Base
 
 		@shows = Show.get_shows_for_movie(id)
 		unless @shows.empty?
-			p "SHOW ID IS NOW #{@show_id}"
 			salon_capacity = Salon.select(@shows[@show_id].salon).capacity.split("x")
 			tickets = Ticket.get_tickets_for_show(@shows[@show_id].id)
-			p @shows[@show_id].id
-p tickets
-p tickets.length
+
 			x = salon_capacity[0].to_i
 			y = salon_capacity[1].to_i
 			@seats = generate_seats(x, y)
