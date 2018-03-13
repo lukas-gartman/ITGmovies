@@ -83,7 +83,8 @@ class App < Sinatra::Base
 
 	get '/logout' do
 		if logged_in?
-			session.delete(:username)
+			# session.delete(:username)
+			session.destroy
 			redirect '/'
 		else
 			flash[:error] = "You are not logged in"
@@ -211,19 +212,19 @@ class App < Sinatra::Base
 	get '/movie/:id' do
 		id = params[:id]
 		salon = params[:salon]
+		@show_id = (params[:show].to_i) - 1 unless params[:show].nil?
+		@show_id = 0 if params[:show].nil?
 		@movie = Movie.select(id)
-		# @ip_status = Account.is_vip?
+		# @vip_status = Account.is_vip?
 
 		@shows = Show.get_shows_for_movie(id)
 		unless @shows.empty?
-			# for show in @shows
-			# 	salon_capacity = Salon.select(show.salon).capacity.split("x")
-			# 	tickets = Ticket.get_tickets_for_show(show.id)
-			# end
-
-			salon_capacity = Salon.select(@shows.first.salon).capacity.split("x")
-			tickets = Ticket.get_tickets_for_show(@shows.first.id)
-
+			p "SHOW ID IS NOW #{@show_id}"
+			salon_capacity = Salon.select(@shows[@show_id].salon).capacity.split("x")
+			tickets = Ticket.get_tickets_for_show(@shows[@show_id].id)
+			p @shows[@show_id].id
+p tickets
+p tickets.length
 			x = salon_capacity[0].to_i
 			y = salon_capacity[1].to_i
 			@seats = generate_seats(x, y)

@@ -1,6 +1,10 @@
 class QuickData
     @@db = SQLite3::Database.open('db/database.sqlite')
 
+    def initialize
+        
+    end
+
     def self.table(name, options = {})
         @table = name
     end

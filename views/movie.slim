@@ -20,19 +20,25 @@ div.movie-info
 
     -unless @shows.empty?
         h2 Purchase tickets
-        form.booking action="/movie/purchase" method="POST"
-            div.shows
+        div.booking
+            form.shows
                 label Select show: 
                 select name="show"
-                    -for show in @shows
-                        option value="#{show.id}" =show.air_date
-            input type="hidden" name="id" value="#{@movie.id}"
-            -@seats.each_with_index do |seats, i|
-                span
-                    label =i+1
-                    -for seat in seats
-                        -if @seats_taken.include?(seat)
-                            input.seat type="checkbox" name="seat[#{seat}]" title="#{seat}" value="#{seat}" disabled="" checked=""
+                    -@shows.each_with_index do |show, i|
+                        -if params[:show].to_i == i+1
+                            option value="#{i + 1}" selected="" =show.air_date
                         -else
-                            input.seat type="checkbox" name="seat[#{seat}]" title="#{seat}" value="#{seat}"
-            input type="submit" value="Purchase tickets"
+                            option value="#{i + 1}" =show.air_date
+                input type="submit" value="Select"
+            form action="/movie/purchase" method="POST"
+                input type="hidden" name="id" value="#{@movie.id}"
+                input type="hidden" name="show" value="#{@shows[@show_id].id}"
+                -@seats.each_with_index do |seats, i|
+                    span
+                        label =i+1
+                        -for seat in seats
+                            -if @seats_taken.include?(seat)
+                                input.seat type="checkbox" name="seat[#{seat}]" title="#{seat}" value="#{seat}" disabled="" checked=""
+                            -else
+                                input.seat type="checkbox" name="seat[#{seat}]" title="#{seat}" value="#{seat}"
+                input type="submit" value="Purchase tickets"

@@ -276,29 +276,44 @@ main {
 	
 }
 
-.booking > span, .booking > span:after {
+.booking > form[action="/movie/purchase"] > span, .booking > form[action="/movie/purchase"] > span:after {
 	content: "\a";
 	white-space: pre;
 }
 
-.booking > span > label {
+.booking > form[action="/movie/purchase"] > span > label {
 	display: inline-block;
 	width: 16px;
 }
 
-.booking > input[type="submit"] {
+.shows {
+	display: flex;
+	flex-direction: row;
+	align-items : center;
+}
+
+.shows > * {
+	margin-right: 10px;
+}
+
+.shows > input[type="submit"] {
 	color: white;
 	background-color: #c00000;
-	/* float: right; */
+	margin: 0;
+	padding: 5px;
+}
+
+.booking > form[action="/movie/purchase"] > input[type="submit"] {
+	color: white;
+	background-color: #c00000;
 	width: 100%;
 }
 
-.booking > input[type="submit"]:hover {
+.booking > form > input[type="submit"]:hover {
 	background-color: #e00000;
 }
 
 .seat {
-	/* padding: 50px; */
 	transform: scale(1.5);
 	margin: 10px;
 }
