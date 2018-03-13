@@ -37,25 +37,37 @@ div.pagination
     -if @page_count >= 2
         -unless @current_page == 1
             -if params['order']
-                a.button href="/page/#{@current_page - 1}?order=#{params['order']}" Prev
+                -if params[:available]
+                    a.button href="/page/#{@current_page - 1}?available=on&order=#{params['order']}" Prev
+                -else
+                    a.button href="/page/#{@current_page - 1}?order=#{params['order']}" Prev
             -else
                 a.button href="/page/#{@current_page - 1}" Prev
 
         -(1..@page_count).each do |page|
             -if @current_page == page
-                -if params['order']
-                    a.button.button-active href="/page/#{page}?order=#{params['order']}" =page
+                -if params[:order]
+                    -if params[:available]
+                        a.button.button-active href="/page/#{page}?available=on&order=#{params['order']}" =page
+                    -else
+                        a.button.button-active href="/page/#{page}?order=#{params[:order]}" =page
                 -else
                     a.button.button-active href="/page/#{page}" =page
             -else
-                -if params['order']
-                    a.button href="/page/#{page}?order=#{params['order']}" =page
+                -if params[:order]
+                    -if params[:available]
+                        a.button href="/page/#{page}?available=on&order=#{params[:order]}" =page
+                    -else
+                        a.button href="/page/#{page}?order=#{params[:order]}" =page
                 -else
                     a.button href="/page/#{page}" =page
                 
         -unless @current_page == @page_count
-            -if params['order']
-                a.button href="/page/#{@current_page + 1}?order=#{params['order']}" Next
+            -if params[:order]
+                -if params[:available]
+                    a.button href="/page/#{@current_page + 1}?available=on&order=#{params['order']}" Next
+                -else
+                    a.button href="/page/#{@current_page + 1}?order=#{params['order']}" Next
             -else
                 a.button href="/page/#{@current_page + 1}" Next    
 
@@ -67,25 +79,25 @@ div.pagination
 div.pagination
     -if @page_count >= 2
         -unless @current_page == 1
-            -if params['order']
+            -if params[:order]
                 a.button href="/page/#{@current_page - 1}?order=#{params['order']}" Prev
             -else
                 a.button href="/page/#{@current_page - 1}" Prev
 
         -(1..@page_count).each do |page|
             -if @current_page == page
-                -if params['order']
+                -if params[:order]
                     a.button.button-active href="/page/#{page}?order=#{params['order']}" =page
                 -else
                     a.button.button-active href="/page/#{page}" =page
             -else
-                -if params['order']
+                -if params[:order]
                     a.button href="/page/#{page}?order=#{params['order']}" =page
                 -else
                     a.button href="/page/#{page}" =page
                 
         -unless @current_page == @page_count
-            -if params['order']
+            -if params[:order]
                 a.button href="/page/#{@current_page + 1}?order=#{params['order']}" Next
             -else
                 a.button href="/page/#{@current_page + 1}" Next

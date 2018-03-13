@@ -189,7 +189,7 @@ class App < Sinatra::Base
 					available_shows.push(movie)
 				end
 			end
-			available_shows = available_shows.split(15)
+			available_shows = available_shows.split(5)
 			
 			@page_count = available_shows.length
 			@movies = available_shows[@current_page - 1]
@@ -198,12 +198,12 @@ class App < Sinatra::Base
 				redirect back
 			end
 		else
-			movies = Movie.all(order: order).split(15)
+			movies = Movie.all(order: order).split(5)
 			@page_count = movies.length
 			@movies = movies[@current_page - 1]
 			if @movies.nil?
 				flash[:error] = "Page does not exist"
-				redirect back
+				redirect '/page/1'
 			end
 		end
 		slim :index
