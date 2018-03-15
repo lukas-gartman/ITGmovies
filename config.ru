@@ -1,6 +1,12 @@
 #Use bundler to load gems
 require 'bundler'
 
+#YAML for creating and parsing configs
+require 'yaml'
+
+#FileUtils for handling file uploads
+require 'fileutils'
+
 #Load gems from Gemfile
 Bundler.require
 
@@ -17,8 +23,15 @@ require_relative 'utils/show.rb'
 #Slim HTML formatting
 Slim::Engine.set_options pretty: true, sort_attrs: false
 
-#FileUtils for handling file uploads
-require 'fileutils'
-
+#Load configs
+config = YAML.load_file('config/config.yml')
+if Sinatra::Base.development?
+    args = config['development']['database']
+    QuickData.setup(args)
+elsif Sinatra::Base.production?
+    args = config['production']['database']
+    QuickData.setup(args)
+end
+p Sinatra::Base.development?
 #Run the app
 run App

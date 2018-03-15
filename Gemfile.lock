@@ -18,6 +18,7 @@ GEM
       ruby_dep (~> 1.2)
     multi_json (1.12.2)
     mustermann (1.0.1)
+    mysql2 (0.4.10)
     rack (2.0.3)
     rack-protection (2.0.0)
       rack
@@ -52,6 +53,7 @@ PLATFORMS
 DEPENDENCIES
   bcrypt
   byebug
+  mysql2
   rerun!
   sinatra
   sinatra-contrib

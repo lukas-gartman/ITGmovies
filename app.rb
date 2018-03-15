@@ -1,5 +1,7 @@
 class App < Sinatra::Base
-    
+	
+	Sinatra::Application.environment == :production
+
 	enable :sessions
 	register Sinatra::Flash
 
@@ -40,7 +42,7 @@ class App < Sinatra::Base
 		@title = "Access denied"
 		slim :denied
 	end
-	
+
 
 	get '/register' do
 		if logged_in?
@@ -189,7 +191,7 @@ class App < Sinatra::Base
 					available_shows.push(movie)
 				end
 			end
-			available_shows = available_shows.split(5)
+			available_shows = available_shows.split(15)
 			
 			@page_count = available_shows.length
 			@movies = available_shows[@current_page - 1]
@@ -198,7 +200,7 @@ class App < Sinatra::Base
 				redirect back
 			end
 		else
-			movies = Movie.all(order: order).split(5)
+			movies = Movie.all(order: order).split(15)
 			@page_count = movies.length
 			@movies = movies[@current_page - 1]
 			if @movies.nil?

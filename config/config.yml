@@ -1,0 +1,13 @@
+development:
+  database:
+    adapter: sqlite3
+    path: db/database.sqlite
+
+production:
+  database:
+    adapter: mysql2  
+    host: localhost
+    port: 3306
+    database: website
+    username: root
+    password: hackme

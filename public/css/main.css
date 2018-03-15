@@ -322,6 +322,10 @@ main {
 	cursor: pointer;
 }
 
+.seat[disabled=""] {
+	border: 1px solid red;
+}
+
 .seat[disabled=""]:hover {
 	cursor: not-allowed;
 }
