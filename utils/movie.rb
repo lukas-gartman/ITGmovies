@@ -53,37 +53,76 @@ class Movie < QuickData
     end
 
     def self.create(title, description, director, length, rating, year, genre)
-        @@db.execute("INSERT INTO movies (title, description, director, length, rating, year, genre) VALUES (?, ?, ?, ?, ?, ?, ?)", title, description, director, length, rating, year, genre)
-        result = @@db.execute("SELECT * FROM movies WHERE id = last_insert_rowid()").first
-        return self.new(*result)
+        if is_sqlite?
+            @@db.execute("INSERT INTO movies (title, description, director, length, rating, year, genre) VALUES (?, ?, ?, ?, ?, ?, ?)", title, description, director, length, rating, year, genre)
+            result = @@db.execute("SELECT * FROM movies WHERE id = last_insert_rowid()").first
+            return self.new(*result)
+        elsif is_mysql?
+            query = @@db.prepare("INSERT INTO movies (title, description, director, length, rating, year, genre) VALUES (?, ?, ?, ?, ?, ?, ?)")
+            query.execute(title, description, director, length, rating, year, genre)
+            id = @@db.last_id
+            result = @@db.execute("SELECT * FROM movies WHERE id = #{id}").first
+            return self.new(*result)
+        end
     end
 
     def self.remove(title)
-        @@db.execute("DELETE FROM movies WHERE username = ?", username)
+        if is_sqlite?
+            return @@db.execute("DELETE FROM movies WHERE username = ?", username)
+        elsif is_mysql?
+            query = @@db.prepare("DELETE FROM movies WHERE username = ?")
+            return query.execute(username)
+        end
     end
 
     def self.select(id)
-        movie = @@db.execute("SELECT * FROM movies WHERE id = ?", id).first
-        return self.new(*movie) unless movie.nil?
+        if is_sqlite?
+            movie = @@db.execute("SELECT * FROM movies WHERE id = ?", id).first
+            return self.new(*movie) unless movie.nil?
+        elsif is_mysql?
+            query = @@db.prepare("SELECT * FROM movies WHERE id = ?")
+            movie = query.execute(id).first
+            return self.new(*movie) unless movie.nil?
+        end
     end
 
     def self.search(title)
-        result = @@db.execute("SELECT * FROM movies WHERE username LIKE ?", "%#{title}%").first
-        return self.new(*result)
+        if is_sqlite?
+            result = @@db.execute("SELECT * FROM movies WHERE username LIKE ?", "%#{title}%").first
+            return self.new(*result)
+        elsif is_mysql?
+            query = @@db.prepare("SELECT * FROM movies WHERE username LIKE ?")
+            result = query.execute("%#{title}%").first
+            return self.new(*result.values)
+        end
     end
 
     def self.all(options = {})
-        if options[:order] == "rating"
-            movies = @@db.execute("SELECT * FROM movies ORDER BY rating DESC")
-        elsif options[:order] == "year"
-            movies = @@db.execute("SELECT * FROM movies ORDER BY year DESC")
-        elsif options[:order] == "asc"
-            movies = @@db.execute("SELECT * FROM movies ORDER BY title ASC")
-        elsif options[:order] == "desc"
-            movies = @@db.execute("SELECT * FROM movies ORDER BY title DESC")
-        else
-            movies = @@db.execute("SELECT * FROM movies")
-        end
+        # if is_sqlite?
+            if options[:order] == "rating"
+                movies = @@db.execute("SELECT * FROM movies ORDER BY rating DESC")
+            elsif options[:order] == "year"
+                movies = @@db.execute("SELECT * FROM movies ORDER BY year DESC")
+            elsif options[:order] == "asc"
+                movies = @@db.execute("SELECT * FROM movies ORDER BY title ASC")
+            elsif options[:order] == "desc"
+                movies = @@db.execute("SELECT * FROM movies ORDER BY title DESC")
+            else
+                movies = @@db.execute("SELECT * FROM movies")
+            end
+        # elsif is_mysql?
+        #     if options[:order] == "rating"
+        #         movies = @@db.execute("SELECT * FROM movies ORDER BY rating DESC", as: :array).to_a
+        #     elsif options[:order] == "year"
+        #         movies = @@db.execute("SELECT * FROM movies ORDER BY year DESC", as: :array).to_a
+        #     elsif options[:order] == "asc"
+        #         movies = @@db.execute("SELECT * FROM movies ORDER BY title ASC", as: :array).to_a
+        #     elsif options[:order] == "desc"
+        #         movies = @@db.execute("SELECT * FROM movies ORDER BY title DESC", as: :array).to_a
+        #     else
+        #         movies = @@db.execute("SELECT * FROM movies")
+        #     end
+        # end
 
         movie_objects = []
         for movie in movies
@@ -95,7 +134,11 @@ class Movie < QuickData
 
     def self.first
         begin
-            return @@db.execute("SELECT * FROM movies LIMIT 1").first
+            # if is_sqlite?
+                return @@db.execute("SELECT * FROM movies LIMIT 1").first
+            # elsif is_sqlite?
+            #     return @@db.execute("SELECT * FROM movies LIMIT 1", as: :array).to_a
+            # end
         rescue
             raise "Table is empty"
         end

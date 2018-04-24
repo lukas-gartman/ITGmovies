@@ -12,26 +12,23 @@ Bundler.require
 
 #Load the app
 require_relative 'app.rb'
-require_relative 'utils/extensions.rb'
 require_relative 'utils/QuickData.rb'
-require_relative 'utils/account.rb'
-require_relative 'utils/movie.rb'
-require_relative 'utils/ticket.rb'
-require_relative 'utils/salon.rb'
-require_relative 'utils/show.rb'
+Dir["utils/*.rb"].each do |file|
+    require_relative file unless file == "QuickData.rb"
+end
 
 #Slim HTML formatting
 Slim::Engine.set_options pretty: true, sort_attrs: false
 
 #Load configs
-config = YAML.load_file('config/config.yml')
+$config = YAML.load_file('config/config.yml').freeze
 if Sinatra::Base.development?
-    args = config['development']['database']
-    QuickData.setup(args)
+    args = $config['development']['database']
+    QuickData.establish_connection(args)
 elsif Sinatra::Base.production?
-    args = config['production']['database']
-    QuickData.setup(args)
+    args = $config['production']['database']
+    QuickData.establish_connection(args)
 end
-p Sinatra::Base.development?
+
 #Run the app
 run App

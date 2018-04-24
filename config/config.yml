@@ -1,9 +1,9 @@
-development:
+production:
   database:
     adapter: sqlite3
     path: db/database.sqlite
 
-production:
+development:
   database:
     adapter: mysql2  
     host: localhost

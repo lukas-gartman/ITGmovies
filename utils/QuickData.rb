@@ -3,7 +3,7 @@ class QuickData
         
     end
 
-    def self.setup(options)
+    def self.establish_connection(options)
         if options['adapter'] == "sqlite3"
             if options['path']
                 @@db = SQLite3::Database.open(options['path'])
@@ -32,6 +32,38 @@ class QuickData
             end
         else
             raise "No adapter was specified"
+        end
+    end
+
+    def self.is_sqlite?
+        if Sinatra::Base.development?
+            if $config['development']['database']['adapter'] == "sqlite3"
+                return true
+            else
+                return false
+            end
+        elsif Sinatra::Base.production?
+            if $config['production']['database']['adapter'] == "sqlite3"
+                return true
+            else
+                return false
+            end
+        end
+    end
+
+    def self.is_mysql?
+        if Sinatra::Base.development?
+            if $config['development']['database']['adapter'] == "mysql2"
+                return true
+            else
+                return false
+            end
+        elsif Sinatra::Base.production?
+            if $config['production']['database']['adapter'] == "mysql2"
+                return true
+            else
+                return false
+            end
         end
     end
 

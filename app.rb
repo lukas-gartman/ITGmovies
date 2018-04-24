@@ -1,6 +1,4 @@
 class App < Sinatra::Base
-	
-	Sinatra::Application.environment == :production
 
 	enable :sessions
 	register Sinatra::Flash
@@ -10,9 +8,9 @@ class App < Sinatra::Base
 			slim file
 		end
 
-		def logged_in?
-			return true if session[:username]
-		end
+		# def logged_in?
+		# 	return true if session[:username]
+		# end
 
 		def generate_seats(x, y)
 			seats = []
@@ -26,7 +24,7 @@ class App < Sinatra::Base
 	end
 
 	before do
-		if logged_in?
+		if Account.logged_in?
 			@user = Account.select(session[:username])
 		end
 	end
@@ -37,15 +35,20 @@ class App < Sinatra::Base
 		slim :'utils/not_found'	
 	end
 
+	get '/lol' do
+		@lol = Account.first
+		slim :lol
+	end
+
 	get '/denied' do
 		status 403
 		@title = "Access denied"
-		slim :denied
+		slim :'utils/denied'
 	end
 
 
 	get '/register' do
-		if logged_in?
+		if Account.logged_in?
 			flash[:error] = "You already have an account"
 			redirect back
 		else
@@ -84,7 +87,7 @@ class App < Sinatra::Base
 	end
 
 	get '/logout' do
-		if logged_in?
+		if Account.logged_in?
 			# session.delete(:username)
 			session.destroy
 			redirect '/'
@@ -95,18 +98,15 @@ class App < Sinatra::Base
 	end
 
 	get '/admin' do
-		@movies = Movie.all(order: "asc")
-		@salons = Salon.all
-		slim :admin
-
-		# if @user.rank == 3
-		# 	@movies = Movie.all(order: "asc")
-
-		# 	slim :admin
-		# else
-		# 	flash[:error] = "You do not have permission to view this page"
-		# 	redirect '/denied'
-		# end
+		if !@user.nil? && @user.rank == 3
+			@movies = Movie.all(order: "asc")
+			@salons = Salon.all
+			slim :admin
+		else
+			# flash[:error] = "You do not have permission to view this page"
+			@title = "Access denied"
+			slim :'utils/denied'
+		end
 	end
 
 	post '/show/create' do
@@ -163,7 +163,7 @@ class App < Sinatra::Base
 
 
 	get '/' do
-		if logged_in?
+		if Account.logged_in?
 			@title = "ITG Movies"
 			@movies = Movie.all
 			if @movies.length > 10
@@ -242,7 +242,7 @@ class App < Sinatra::Base
 		show = params[:show]
 		seats = params[:seat]
 		
-		if logged_in?
+		if Account.logged_in?
 			if seats.nil?
 				flash[:error] = "You must select a seat"
 				redirect back
@@ -260,16 +260,4 @@ class App < Sinatra::Base
 			redirect '/'
 		end
 	end
-	
-	get '/test' do
-		
-	end
-
-	get '/test/:username' do
-		username = params[:username]
-		@account = Account.select(username)
-		slim :test
-	end
 end
-
-

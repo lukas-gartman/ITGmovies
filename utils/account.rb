@@ -21,6 +21,10 @@ class Account < QuickData
         yield(self) if block_given?
     end
 
+    def self.logged_in?
+        return true if session[:username]
+    end
+
     def to_a
         ivars = self.instance_variables
         values = []
@@ -53,13 +57,27 @@ class Account < QuickData
     def self.create(username, password, password_repeat, email)
         raise "Password mismatch" unless password == password_repeat
         pass_hash = BCrypt::Password.create(password)
-        @@db.execute("INSERT INTO accounts (username, pass_hash, email) VALUES (?, ?, ?)", username, pass_hash, email)
-        result = @@db.execute("SELECT * FROM accounts WHERE id = last_insert_rowid()").first
-        return self.new(*result)
+        if is_sqlite?
+            @@db.execute("INSERT INTO accounts (username, pass_hash, email) VALUES (?, ?, ?)", username, pass_hash, email)
+            result = @@db.execute("SELECT * FROM accounts WHERE id = last_insert_rowid()").first
+            return self.new(*result)
+        elsif is_mysql?
+            query = @@db.prepare("INSERT INTO accounts (username, pass_hash, email) VALUES (?, ?, ?)")
+            query.execute(username, pass_hash, email)
+            id = @@db.last_id
+            # result = @@db.execute("SELECT * FROM accounts WHERE id = #{id}", as: :array).to_a
+            result = @@db.execute("SELECT * FROM accounts WHERE id = #{id}").first
+            return self.new(*result.values)
+        end
     end
 
     def self.remove(username)
-        return @@db.execute("DELETE FROM accounts WHERE username = ?", username)
+        if is_sqlite?
+            return @@db.execute("DELETE FROM accounts WHERE username = ?", username)
+        elsif is_mysql?
+            query = @@db.prepare("DELETE FROM accounts WHERE username = ?")
+            return query.execute(username)
+        end
     end
 
     def self.auth(username, password)
@@ -70,13 +88,31 @@ class Account < QuickData
     end
 
     def self.select(username)
-        result = @@db.execute("SELECT * FROM accounts WHERE username = ?", username).first
-        return nil if result.nil?
-        return self.new(*result)
+        if is_sqlite?
+            result = @@db.execute("SELECT * FROM accounts WHERE username = ?", username).first
+            return nil if result.nil?
+            return self.new(*result)
+        elsif is_mysql?
+            query = @@db.prepare("SELECT * FROM accounts WHERE username = ?")
+            result = query.execute(username).first
+            p result
+            
+            return self.new(*result)
+        end
     end
 
     def self.all
-        accounts = @@db.execute("SELECT * FROM accounts")
+        if is_sqlite?
+            accounts = @@db.execute("SELECT * FROM accounts")
+        elsif is_mysql?
+            accounts = @@db.query("SELECT * FROM accounts", as: :array).to_a
+            # sql = @@db.query("SELECT * FROM accounts")
+            # accounts = []
+            # for account in sql
+            #     accounts.push(account.values)
+            # end
+        end
+
         account_objects = []
         for account in accounts
             account_objects.push(self.new(*account))
@@ -86,13 +122,24 @@ class Account < QuickData
 
     def self.first
         begin
-            return @@db.execute("SELECT * FROM accounts LIMIT 1").first
+            if is_sqlite?
+                account = @@db.execute("SELECT * FROM accounts LIMIT 1").first
+                return self.new(*account)
+            elsif is_mysql?
+                account = @@db.execute("SELECT * FROM accounts LIMIT 1", as: :array).to_a.first
+                return self.new(*account)
+            end
         rescue
             raise "Table is empty"
         end
     end
 
     def self.set_rank(username, rank)
-        return @@db.execute("UPDATE accounts SET rank = ? WHERE username = ?", rank, username)
+        if is_sqlite?
+            return @@db.execute("UPDATE accounts SET rank = ? WHERE username = ?", rank, username)
+        elsif is_mysql?
+            query = @@db.prepare("UPDATE accounts SET rank = ? WHERE username = ?")
+            return query.execute(rank, username)
+        end
     end
 end

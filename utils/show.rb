@@ -16,13 +16,26 @@ class Show < QuickData
     end
 
     def self.create(movie, salon, air_date)
-        @@db.execute("INSERT INTO shows (movie, salon, air_date) VALUES (?, ?, ?)", movie, salon, air_date)
-        result = @@db.execute("SELECT * FROM shows WHERE id = last_insert_rowid()").first
-        return self.new(*result) unless result.nil?
+        if is_sqlite?
+            @@db.execute("INSERT INTO shows (movie, salon, air_date) VALUES (?, ?, ?)", movie, salon, air_date)
+            result = @@db.execute("SELECT * FROM shows WHERE id = last_insert_rowid()").first
+            return self.new(*result) unless result.nil?
+        elsif is_mysql?
+            query = @@db.prepare("INSERT INTO shows (movie, salon, air_date), VALUES (?, ?, ?)")
+            query.execute(movie, salon, air_date)
+            id = @@db.last_id
+            result = @@db.execute("SELECT * FROM shows WHERE id = #{id}").first
+            return self.new(*result) unless result.nil?
+        end
     end
 
     def self.get_shows_for_movie(id)
-        shows = @@db.execute("SELECT * FROM shows WHERE movie = ?", id)
+        if is_sqlite?
+            shows = @@db.execute("SELECT * FROM shows WHERE movie = ?", id)
+        elsif is_mysql?
+            query = @@db.prepare("SELECT * FROM shows WHERE movie = ?")
+            shows = query.execute(id)
+        end
 
         movie_shows = []
         for show in shows
@@ -32,7 +45,11 @@ class Show < QuickData
     end
 
     def self.all(options = {})
-        shows = @@db.execute("SELECT * FROM shows")
+        # if is_sqlite?
+            shows = @@db.execute("SELECT * FROM shows")
+        # elsif is_mysql?
+        #     shows = @@db.execute("SELECT * FROM shows", as: :array).to_a
+        # end
 
         show_objects = []
         for show in shows
