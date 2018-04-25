@@ -48,7 +48,7 @@ class App < Sinatra::Base
 
 
 	get '/register' do
-		if logged_in?
+		if @user
 			flash[:error] = "You already have an account"
 			redirect back
 		else
