@@ -26,6 +26,8 @@ class App < Sinatra::Base
 	before do
 		if logged_in?
 			@user = Account.select(session[:username])
+		else
+			session.delete(:username)
 		end
 	end
 
@@ -89,8 +91,7 @@ class App < Sinatra::Base
 	end
 
 	get '/logout' do
-		if logged_in?
-			# session.delete(:username)
+		if @user
 			session.destroy
 			redirect '/'
 		else
@@ -165,7 +166,7 @@ class App < Sinatra::Base
 
 
 	get '/' do
-		if logged_in?
+		if @user
 			@title = "ITG Movies"
 			@movies = Movie.all
 			if @movies.length > 10
@@ -244,7 +245,7 @@ class App < Sinatra::Base
 		show = params[:show]
 		seats = params[:seat]
 		
-		if logged_in?
+		if @user
 			if seats.nil?
 				flash[:error] = "You must select a seat"
 				redirect back
