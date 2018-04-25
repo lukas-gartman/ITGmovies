@@ -8,9 +8,9 @@ class App < Sinatra::Base
 			slim file
 		end
 
-		# def logged_in?
-		# 	return true if session[:username]
-		# end
+		def logged_in?
+			return true if session[:username]
+		end
 
 		def generate_seats(x, y)
 			seats = []
@@ -24,7 +24,7 @@ class App < Sinatra::Base
 	end
 
 	before do
-		if Account.logged_in?
+		if logged_in?
 			@user = Account.select(session[:username])
 		end
 	end
@@ -48,7 +48,7 @@ class App < Sinatra::Base
 
 
 	get '/register' do
-		if Account.logged_in?
+		if logged_in?
 			flash[:error] = "You already have an account"
 			redirect back
 		else
@@ -75,9 +75,11 @@ class App < Sinatra::Base
 		username = params[:username]
 		password = params[:password]
 		remember = params[:remember]
+		TIME_UNTIL_EXPIRE = 2592000
+
 		if Account.auth(username, password)
 			session[:username] = username
-			session.options[:expire_after] = 2592000 unless remember.nil?
+			session.options[:expire_after] = TIME_UNTIL_EXPIRE unless remember.nil?
 			# flash[:success] = "Logged in"
 			redirect back
 		else
@@ -87,7 +89,7 @@ class App < Sinatra::Base
 	end
 
 	get '/logout' do
-		if Account.logged_in?
+		if logged_in?
 			# session.delete(:username)
 			session.destroy
 			redirect '/'
@@ -163,7 +165,7 @@ class App < Sinatra::Base
 
 
 	get '/' do
-		if Account.logged_in?
+		if logged_in?
 			@title = "ITG Movies"
 			@movies = Movie.all
 			if @movies.length > 10
@@ -242,7 +244,7 @@ class App < Sinatra::Base
 		show = params[:show]
 		seats = params[:seat]
 		
-		if Account.logged_in?
+		if logged_in?
 			if seats.nil?
 				flash[:error] = "You must select a seat"
 				redirect back

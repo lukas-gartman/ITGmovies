@@ -21,10 +21,6 @@ class Account < QuickData
         yield(self) if block_given?
     end
 
-    def self.logged_in?
-        return true if session[:username]
-    end
-
     def to_a
         ivars = self.instance_variables
         values = []
@@ -95,8 +91,7 @@ class Account < QuickData
         elsif is_mysql?
             query = @@db.prepare("SELECT * FROM accounts WHERE username = ?")
             result = query.execute(username).first
-            p result
-            
+
             return self.new(*result)
         end
     end
