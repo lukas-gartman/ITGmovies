@@ -4,7 +4,7 @@ div.admin
 
     h2 Create show
     div.admin-category
-        form.column action="/show/create" method="POST"
+        form.column action="/shows" method="POST"
             label Movie:
             select name="movie"
                 -for movie in @movies
@@ -26,7 +26,7 @@ div.admin
 
     h2 Add salon
     div.admin-category
-        form.column action="/salon/create" method="POST"
+        form.column action="/salons" method="POST"
             div
                 / label Salon id:
                 / input type="number" name="id" min="1"
@@ -50,7 +50,7 @@ div.admin
 
     h2 Add movie
     div.admin-category
-        form.column action="/movie/create" method="POST"
+        form.column action="/movies" method="POST"
 
             label Title:
             input type="text" name="title"

@@ -68,10 +68,10 @@ class Movie < QuickData
 
     def self.remove(title)
         if is_sqlite?
-            return @@db.execute("DELETE FROM movies WHERE username = ?", username)
+            return @@db.execute("DELETE FROM movies WHERE username = ?", title)
         elsif is_mysql?
             query = @@db.prepare("DELETE FROM movies WHERE username = ?")
-            return query.execute(username)
+            return query.execute(title)
         end
     end
 

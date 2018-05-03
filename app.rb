@@ -44,6 +44,20 @@ class App < Sinatra::Base
 	end
 
 
+	get '/' do
+		if @user
+			@title = "ITG Movies"
+			@movies = Movie.all
+			if @movies.length > 10
+				redirect '/page/1'
+			end
+			slim :index
+		else
+			@title = "ITG Movies | Sign in"
+			slim :login
+		end
+	end
+
 	get '/register' do
 		if @user
 			flash[:error] = "You already have an account"
@@ -54,7 +68,7 @@ class App < Sinatra::Base
 		end
 	end
 
-	post '/register' do
+	post '/users/register' do
 		username = params[:username]
 		password = params[:password]
 		password_repeat = params[:password_repeat]
@@ -68,7 +82,7 @@ class App < Sinatra::Base
 		slim :login
 	end
 
-	post '/login' do
+	post '/users/login' do
 		username = params[:username]
 		password = params[:password]
 		remember = params[:remember]
@@ -105,7 +119,7 @@ class App < Sinatra::Base
 		end
 	end
 
-	post '/show/create' do
+	post '/shows' do
 		movie = params[:movie]
 		salon = params[:salon]
 		date = params[:date]
@@ -127,7 +141,7 @@ class App < Sinatra::Base
 		redirect back
 	end
 
-	post '/salon/create' do
+	post '/salons' do
 		capacity_x = params[:capacity_x]
 		capacity_y = params[:capacity_y]
 		capacity = "#{capacity_x}x#{capacity_y}"
@@ -139,7 +153,7 @@ class App < Sinatra::Base
 		redirect back
 	end
 
-	post '/movie/create' do
+	post '/movies' do
 		title = params[:title]
 		description = params[:description]
 		director = params[:director]
@@ -151,21 +165,6 @@ class App < Sinatra::Base
 		Movie.create(title, description, director, length, rating, year, genre)
 		flash[:success] = "Movie has been added"
 		redirect back
-	end
-
-
-	get '/' do
-		if @user
-			@title = "ITG Movies"
-			@movies = Movie.all
-			if @movies.length > 10
-				redirect '/page/1'
-			end
-			slim :index
-		else
-			@title = "ITG Movies | Sign in"
-			slim :login
-		end
 	end
 	
 	get '/page/:page' do
