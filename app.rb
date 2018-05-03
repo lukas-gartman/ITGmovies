@@ -3,6 +3,8 @@ class App < Sinatra::Base
 	enable :sessions
 	register Sinatra::Flash
 
+	TIME_UNTIL_EXPIRE = 2592000
+
 	helpers do
 		def display(file)
 			slim file
@@ -26,8 +28,6 @@ class App < Sinatra::Base
 	before do
 		if logged_in?
 			@user = Account.select(session[:username])
-		else
-			session.delete(:username)
 		end
 	end
 
@@ -35,11 +35,6 @@ class App < Sinatra::Base
 		status 404
 		@title = "404 Not Found"
 		slim :'utils/not_found'	
-	end
-
-	get '/lol' do
-		@lol = Account.first
-		slim :lol
 	end
 
 	get '/denied' do
@@ -77,13 +72,11 @@ class App < Sinatra::Base
 		username = params[:username]
 		password = params[:password]
 		remember = params[:remember]
-		TIME_UNTIL_EXPIRE = 2592000
 
 		if Account.auth(username, password)
 			session[:username] = username
 			session.options[:expire_after] = TIME_UNTIL_EXPIRE unless remember.nil?
-			# flash[:success] = "Logged in"
-			redirect back
+			redirect '/'
 		else
 			flash[:error] = "Invalid username or password"
 			redirect back
@@ -119,17 +112,13 @@ class App < Sinatra::Base
 		time = params[:time]
 		air_date = "#{date} #{time}:00"
 
-		if movie.empty?
-			flash[:error] = "Please select a movie"
-			redirect back
-		elsif salon.empty?
-			flash[:error] = "Please select a salon"
-			redirect back
-		elsif date.empty?
-			flash[:error] = "Please select a date"
-			redirect back
-		elsif time.empty?
-			flash[:error] = "Please select a time"
+		errors = []
+		errors.push("Please select a movie") if movie.empty?
+		errors.push("Please select a salon") if salon.empty?
+		errors.push("Please select a date") if date.empty?
+		errors.push("Please select a time") if time.empty?
+		unless errors.empty?
+			flash[:error] = errors
 			redirect back
 		end
 
@@ -220,7 +209,6 @@ class App < Sinatra::Base
 		@show_id = (params[:show].to_i) - 1 unless params[:show].nil?
 		@show_id = 0 if params[:show].nil?
 		@movie = Movie.select(id)
-		# @vip_status = Account.is_vip?
 
 		@shows = Show.get_shows_for_movie(id)
 		unless @shows.empty?

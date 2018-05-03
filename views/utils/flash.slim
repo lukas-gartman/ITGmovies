@@ -1,8 +1,8 @@
--flash.each do |status, message|
-	-if status.to_s == "loading"
-		div.dim
-			div class=("#{status}")
-				= message
-	-else
-		div class=("alert alert-#{status}") 
+-flash.each do |name, message|
+	div class=("alert alert-#{name}") 
+		-if message.is_a? Array
+			ul
+				-for m in message
+					li = m
+		-else
 			= message
