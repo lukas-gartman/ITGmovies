@@ -21,6 +21,8 @@ class Movie < QuickData
         @year = year
         @genre = genre
         yield(self) if block_given?
+        # @id = @key
+        # @columns.each { |var| instance_variable_set(var, var) }
     end
 
     def to_a
@@ -52,19 +54,19 @@ class Movie < QuickData
         return values, index
     end
 
-    def self.create(title, description, director, length, rating, year, genre)
-        if is_sqlite?
-            @@db.execute("INSERT INTO movies (title, description, director, length, rating, year, genre) VALUES (?, ?, ?, ?, ?, ?, ?)", title, description, director, length, rating, year, genre)
-            result = @@db.execute("SELECT * FROM movies WHERE id = last_insert_rowid()").first
-            return self.new(*result)
-        elsif is_mysql?
-            query = @@db.prepare("INSERT INTO movies (title, description, director, length, rating, year, genre) VALUES (?, ?, ?, ?, ?, ?, ?)")
-            query.execute(title, description, director, length, rating, year, genre)
-            id = @@db.last_id
-            result = @@db.execute("SELECT * FROM movies WHERE id = #{id}").first
-            return self.new(*result)
-        end
-    end
+    # def self.create(title, description, director, length, rating, year, genre)
+    #     if is_sqlite?
+    #         @@db.execute("INSERT INTO movies (title, description, director, length, rating, year, genre) VALUES (?, ?, ?, ?, ?, ?, ?)", title, description, director, length, rating, year, genre)
+    #         result = @@db.execute("SELECT * FROM movies WHERE id = last_insert_rowid()").first
+    #         return self.new(*result)
+    #     elsif is_mysql?
+    #         query = @@db.prepare("INSERT INTO movies (title, description, director, length, rating, year, genre) VALUES (?, ?, ?, ?, ?, ?, ?)")
+    #         query.execute(title, description, director, length, rating, year, genre)
+    #         id = @@db.last_id
+    #         result = @@db.execute("SELECT * FROM movies WHERE id = #{id}").first
+    #         return self.new(*result)
+    #     end
+    # end
 
     def self.remove(title)
         if is_sqlite?

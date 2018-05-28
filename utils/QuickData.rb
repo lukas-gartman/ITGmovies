@@ -72,15 +72,41 @@ class QuickData
     end
 
     def self.primary_key(name, type, options = {})
-        @id = name
+        @primary_key = name
     end
 
     def self.column(name, type, options = {})
-        @columns ||= []
-        @columns.push(name)
+        # @columns ||= []
+        # @columns.push([name, options])
+        @columns ||= {}
+        @columns[name] = {type: type, options: options}
     end
 
-    def self.encrypted(name, type, options = {})
+    def self.create(hash)
+        hash.delete("captures")
 
+        columns = hash.keys.join(", ")
+        for column in hash.keys
+            unless @columns.keys.include?(column)
+                hash.delete(column)
+            end
+        end
+        values = hash.values.join("', '")
+        @@db.execute("INSERT INTO #{@table} (#{columns}) VALUES ('#{values}')")
+    end
+
+    def self.remove(hash)
+        hash.delete("captures")
+        columns = hash.keys.join(", = ?")
+        for column in hash.keys
+            unless @columns.keys.include?(column)
+                hash.delete(column)
+            end
+        end
+        values = hash.values.join(", ")
+        escaperz = []
+        columns.length.times { escaperz << '?' }
+        escaperz.join(", ")
+        @@db.execute("DELETE FROM #{@table} WHERE #{columns} = ?", values)
     end
 end

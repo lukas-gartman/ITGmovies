@@ -32,9 +32,10 @@ div.admin
                 / input type="number" name="id" min="1"
 
                 label Capacity:
-                input type="number" min="1" max="20" title="Width" name="capacity_x"
-                label x
-                input type="number" min="1" max="30" title="Height" name="capacity_y"
+                input type="text" name="capacity" placeholder="Eg. 10x5"
+                /input type="number" min="1" max="20" title="Width" name="capacity_x"
+                /label x
+                /input type="number" min="1" max="30" title="Height" name="capacity_y"
 
                 label VIP:
                 select name="vip"
@@ -73,9 +74,7 @@ div.admin
             
             div
                 label Length:
-                input type="number" name="length_hours" min="0" value="0"
-                label hrs
-                input type="number" name="length_minutes" min="0" value="0"
+                input type="number" name="length" min="0" value="0"
                 label min
 
             input type="submit" value="Add movie"

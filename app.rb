@@ -71,9 +71,10 @@ class App < Sinatra::Base
 	post '/users/register' do
 		username = params[:username]
 		password = params[:password]
-		password_repeat = params[:password_repeat]
+		# password_repeat = params[:password_repeat]
 		email = params[:email]
-		Account.create(username, password, password_repeat, email)
+		params[:password] = BCrypt::Password.create(password)
+		Account.create(params)
 		flash[:success] = "Account created. Welcome!"
 		redirect '/'
 	end
@@ -136,7 +137,8 @@ class App < Sinatra::Base
 			redirect back
 		end
 
-		Show.create(movie, salon, air_date)
+		# Show.create(movie, salon, air_date)
+		Show.create(params)
 		flash[:success] = "Show has been created"
 		redirect back
 	end
@@ -148,21 +150,15 @@ class App < Sinatra::Base
 		vip = params[:vip]
 		handicap = params[:handicap]
 
-		Salon.create(capacity, vip, handicap)
+		# Salon.create(capacity, vip, handicap)
+		Salon.create(params)
 		flash[:success] = "Salon has been added"
 		redirect back
 	end
 
 	post '/movies' do
-		title = params[:title]
-		description = params[:description]
-		director = params[:director]
-		genre = params[:genre]
-		rating = params[:rating]
-		year = params[:year]
-		length = (params[:length_hours].to_i*60) + params[:length_minutes].to_i
-
-		Movie.create(title, description, director, length, rating, year, genre)
+		# Movie.create(title, description, director, length, rating, year, genre)
+		Movie.create(params)
 		flash[:success] = "Movie has been added"
 		redirect back
 	end
@@ -228,18 +224,19 @@ class App < Sinatra::Base
 	end
 
 	post '/movie/purchase' do
-		movie_id = params[:id]
+		# movie_id = params[:id]
 		show = params[:show]
 		seats = params[:seat]
-		
+
 		if @user
 			if seats.nil?
 				flash[:error] = "You must select a seat"
 				redirect back
 			else
 				seats.each do |_, seat|
-					seat = seat.to_i
-					Ticket.create(@user.username, show, seat)
+					# seat = seat.to_i
+					hash = {:owner => @user.username, :show => show, :seat => seat}
+					Ticket.create(hash)
 				end
 
 				flash[:success] = "Tickets have been purchased"
@@ -249,5 +246,6 @@ class App < Sinatra::Base
 			# flash[:error] = "You must login before purchasing tickets"
 			redirect '/'
 		end
+		
 	end
 end

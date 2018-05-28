@@ -15,19 +15,19 @@ class Ticket < QuickData
         yield(self) if block_given?
     end
 
-    def self.create(owner, show, seat)
-        if is_sqlite?
-            @@db.execute("INSERT INTO tickets (owner, show, seat) VALUES (?, ?, ?)", owner, show, seat)
-            result = @@db.execute("SELECT * FROM tickets WHERE id = last_insert_rowid()").first
-            return self.new(*result)
-        elsif is_mysql?
-            query = @@db.prepare("INSERT INTO tickets (owner, show, seat) VALUES (?, ?, ?")
-            query.execute(owner, show, seat)
-            id = @@db.last_id
-            result = @@db.execute("SELECT * FROM tickets WHERE id = #{id}").first
-            return self.new(*result)
-        end
-    end
+    # def self.create(owner, show, seat)
+    #     if is_sqlite?
+    #         @@db.execute("INSERT INTO tickets (owner, show, seat) VALUES (?, ?, ?)", owner, show, seat)
+    #         result = @@db.execute("SELECT * FROM tickets WHERE id = last_insert_rowid()").first
+    #         return self.new(*result)
+    #     elsif is_mysql?
+    #         query = @@db.prepare("INSERT INTO tickets (owner, show, seat) VALUES (?, ?, ?")
+    #         query.execute(owner, show, seat)
+    #         id = @@db.last_id
+    #         result = @@db.execute("SELECT * FROM tickets WHERE id = #{id}").first
+    #         return self.new(*result)
+    #     end
+    # end
 
     def self.get_tickets_for_show(show)
         if is_sqlite?

@@ -3,7 +3,7 @@ class Account < QuickData
     table "accounts", String
     primary_key "id", Integer, required: true
     column "username", String, required: true
-    encrypted "pass_hash", String, required: true
+    column "pass_hash", String, required: true, encrypted: true
     column "email", String, required: true
     column "rank", Integer, default: 0
     column "last_active", DateTime, default: DateTime.now
@@ -50,22 +50,22 @@ class Account < QuickData
         return values, index
     end
 
-    def self.create(username, password, password_repeat, email)
-        raise "Password mismatch" unless password == password_repeat
-        pass_hash = BCrypt::Password.create(password)
-        if is_sqlite?
-            @@db.execute("INSERT INTO accounts (username, pass_hash, email) VALUES (?, ?, ?)", username, pass_hash, email)
-            result = @@db.execute("SELECT * FROM accounts WHERE id = last_insert_rowid()").first
-            return self.new(*result)
-        elsif is_mysql?
-            query = @@db.prepare("INSERT INTO accounts (username, pass_hash, email) VALUES (?, ?, ?)")
-            query.execute(username, pass_hash, email)
-            id = @@db.last_id
-            # result = @@db.execute("SELECT * FROM accounts WHERE id = #{id}", as: :array).to_a
-            result = @@db.execute("SELECT * FROM accounts WHERE id = #{id}").first
-            return self.new(*result.values)
-        end
-    end
+    # def self.create(username, password, password_repeat, email)
+    #     raise "Password mismatch" unless password == password_repeat
+    #     pass_hash = BCrypt::Password.create(password)
+    #     if is_sqlite?
+    #         @@db.execute("INSERT INTO accounts (username, pass_hash, email) VALUES (?, ?, ?)", username, pass_hash, email)
+    #         result = @@db.execute("SELECT * FROM accounts WHERE id = last_insert_rowid()").first
+    #         return self.new(*result)
+    #     elsif is_mysql?
+    #         query = @@db.prepare("INSERT INTO accounts (username, pass_hash, email) VALUES (?, ?, ?)")
+    #         query.execute(username, pass_hash, email)
+    #         id = @@db.last_id
+    #         # result = @@db.execute("SELECT * FROM accounts WHERE id = #{id}", as: :array).to_a
+    #         result = @@db.execute("SELECT * FROM accounts WHERE id = #{id}").first
+    #         return self.new(*result.values)
+    #     end
+    # end
 
     def self.remove(username)
         if is_sqlite?

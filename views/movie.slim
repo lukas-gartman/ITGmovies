@@ -31,7 +31,7 @@ div.movie-info
                             option value="#{i + 1}" =show.air_date
                 input type="submit" value="Select"
             form action="/movie/purchase" method="POST"
-                input type="hidden" name="id" value="#{@movie.id}"
+                /input type="hidden" name="id" value="#{@movie.id}"
                 input type="hidden" name="show" value="#{@shows[@show_id].id}"
                 -@seats.each_with_index do |seats, i|
                     span

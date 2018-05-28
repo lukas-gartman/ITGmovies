@@ -15,19 +15,19 @@ class Show < QuickData
         yield(self) if block_given?
     end
 
-    def self.create(movie, salon, air_date)
-        if is_sqlite?
-            @@db.execute("INSERT INTO shows (movie, salon, air_date) VALUES (?, ?, ?)", movie, salon, air_date)
-            result = @@db.execute("SELECT * FROM shows WHERE id = last_insert_rowid()").first
-            return self.new(*result) unless result.nil?
-        elsif is_mysql?
-            query = @@db.prepare("INSERT INTO shows (movie, salon, air_date), VALUES (?, ?, ?)")
-            query.execute(movie, salon, air_date)
-            id = @@db.last_id
-            result = @@db.execute("SELECT * FROM shows WHERE id = #{id}").first
-            return self.new(*result) unless result.nil?
-        end
-    end
+    # def self.create(movie, salon, air_date)
+    #     if is_sqlite?
+    #         @@db.execute("INSERT INTO shows (movie, salon, air_date) VALUES (?, ?, ?)", movie, salon, air_date)
+    #         result = @@db.execute("SELECT * FROM shows WHERE id = last_insert_rowid()").first
+    #         return self.new(*result) unless result.nil?
+    #     elsif is_mysql?
+    #         query = @@db.prepare("INSERT INTO shows (movie, salon, air_date), VALUES (?, ?, ?)")
+    #         query.execute(movie, salon, air_date)
+    #         id = @@db.last_id
+    #         result = @@db.execute("SELECT * FROM shows WHERE id = #{id}").first
+    #         return self.new(*result) unless result.nil?
+    #     end
+    # end
 
     def self.get_shows_for_movie(id)
         if is_sqlite?

@@ -15,19 +15,19 @@ class Salon < QuickData
         yield(self) if block_given?
     end
 
-    def self.create(capacity, vip, handicap)
-        if is_sqlite?
-            @@db.execute("INSERT INTO salons (capacity, vip, handicap) VALUES (?, ?, ?)", capacity, vip, handicap)
-            result = @@db.execute("SELECT * FROM salons WHERE id = last_insert_rowid()").first
-            return self.new(*result) unless result.nil?
-        elsif is_mysql?
-            query = @@db.prepare("INSERT INTO salons (capacity, vip, handicap) VALUES (?, ?, ?)")
-            query.execute(capacity, vip, handicap)
-            id = @@db.last_id
-            result = @@db.execute("SELECT * FROM salons WHERE id = #{id}").first
-            return self.new(*result) unless result.nil?
-        end
-    end
+    # def self.create(capacity, vip, handicap)
+    #     if is_sqlite?
+    #         @@db.execute("INSERT INTO salons (capacity, vip, handicap) VALUES (?, ?, ?)", capacity, vip, handicap)
+    #         result = @@db.execute("SELECT * FROM salons WHERE id = last_insert_rowid()").first
+    #         return self.new(*result) unless result.nil?
+    #     elsif is_mysql?
+    #         query = @@db.prepare("INSERT INTO salons (capacity, vip, handicap) VALUES (?, ?, ?)")
+    #         query.execute(capacity, vip, handicap)
+    #         id = @@db.last_id
+    #         result = @@db.execute("SELECT * FROM salons WHERE id = #{id}").first
+    #         return self.new(*result) unless result.nil?
+    #     end
+    # end
 
     def self.all
         if is_sqlite?
